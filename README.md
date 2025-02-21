@@ -13,11 +13,19 @@ To use OpenMM, create a new environment with the following command:
 
 `conda create -n openmm`
 
-For OpenMM you will need to install:
--openmm (conda install -c conda-forge openmm)
--numpy
--matplotlib
--jupyter
+For OpenMM, you will need to install the following:
+
+- **OpenMM**  
+  `conda install -c conda-forge openmm`
+
+- **NumPy**  
+  `conda install numpy`
+
+- **Matplotlib**  
+  `conda install matplotlib`
+
+- **Jupyter**  
+  `conda install jupyter`
 
 You can use `conda install` or `pip install`. I would like you to give it a try by your own, if it gets too complicated I will send you a line command to copy and paste.
 
