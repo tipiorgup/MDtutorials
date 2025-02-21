@@ -11,8 +11,7 @@ While **Gromacs** is a widely-used MD platform with a broad set of features, I f
 
 To use OpenMM, create a new environment with the following command:
 
-```bash
-conda create -n openmm
+`conda create -n openmm`
 
 For OpenMM you will need to install:
 -openmm (conda install -c conda-forge openmm)
