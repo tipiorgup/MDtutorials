@@ -181,8 +181,24 @@ def finish(label, key):
     )
 
 
+CREDITS = (
+    "The workflow follows the **Lysozyme in Water** tutorial by Justin A. Lemkul "
+    "([mdtutorials.com](http://www.mdtutorials.com/gmx/lysozyme/index.html)). "
+    "Lemkul, J. A. *From Proteins to Perturbed Hamiltonians: A Suite of Tutorials for the "
+    "GROMACS-2018 Molecular Simulation Package*, Living J. Comput. Mol. Sci. 2019, 1(1), 5068. "
+    "This site and the Jupyter notebooks are an adaptation of that tutorial, not the original "
+    "work. Simulations use [GROMACS](https://www.gromacs.org) and [OpenMM](https://openmm.org)."
+)
+
+
+def credits():
+    st.divider()
+    st.caption(CREDITS)
+
+
 init()
 if st.session_state.engine is None:
     welcome()
 else:
     tutorial()
+credits()

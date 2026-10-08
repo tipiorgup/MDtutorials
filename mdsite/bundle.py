@@ -41,7 +41,10 @@ README = """MD tutorial bundle ({engine})
 4. Open {folder}/{notebook} and run the cells from top to bottom.
 
 Keep the folder layout: the notebook reads ../structures/1aki.pdb.
-Tutorial base: http://www.mdtutorials.com/gmx/lysozyme/index.html
+Credits: this notebook adapts the "Lysozyme in Water" tutorial by Justin A. Lemkul,
+http://www.mdtutorials.com/gmx/lysozyme/index.html
+Lemkul, J. A. Living J. Comput. Mol. Sci. 2019, 1(1), 5068.
+The adaptation to Jupyter notebooks and Streamlit is not the original work.
 """
 
 

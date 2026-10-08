@@ -46,3 +46,14 @@ Deploy on Streamlit Community Cloud: point a new app to this repository and `app
 `requirements.txt` installs OpenMM and `packages.txt` installs GROMACS with apt.
 Demos run on a small shared CPU, so keep the step sliders low. Only two demo runs execute at the
 same time, the others wait in a queue.
+
+## Credits
+
+The workflow comes from the **Lysozyme in Water** tutorial by Justin A. Lemkul:
+[mdtutorials.com](http://www.mdtutorials.com/gmx/lysozyme/index.html).
+Lemkul, J. A. *From Proteins to Perturbed Hamiltonians: A Suite of Tutorials for the GROMACS-2018
+Molecular Simulation Package [Article v1.0]*, Living J. Comput. Mol. Sci. 2019, 1(1), 5068.
+
+The notebooks and the Streamlit site in this repository are an adaptation of that tutorial for
+teaching, not the original work. Simulations use [GROMACS](https://www.gromacs.org) and
+[OpenMM](https://openmm.org).

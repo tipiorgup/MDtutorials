@@ -15,7 +15,8 @@ STEPS = [
         "topology", "2. Topology with pdb2gmx",
         "`gmx pdb2gmx` chooses the force field (CHARMM27) and water model (TIP4P), adds the "
         "hydrogens and writes the topology `topol.top`, which lists every atom, bond and angle.",
-        "gmx pdb2gmx -f clean.pdb -o processed.gro -water tip4p -p topol.top -ff charmm27 2>&1 | tail -25\n",
+        "gmx pdb2gmx -f clean.pdb -o processed.gro -water tip4p -p topol.top -ff charmm27 2>&1 | tail -25\n"
+        "cp topol.top topol_base.top   # clean copy, so the next steps can be rerun\n",
         kind="bash",
         notebook="Cell 5 of the notebook",
     ),
@@ -31,7 +32,9 @@ STEPS = [
         "solvate", "4. Add water",
         "`gmx solvate` fills the empty box with TIP4P water and updates the number of water "
         "molecules in the topology.",
-        "gmx solvate -cp boxed.gro -cs tip4p.gro -p topol.top -o solvated.gro 2>&1 | tail -12\n",
+        "cp topol_base.top topol.top   # solvate edits topol.top, start from the clean copy\n"
+        "gmx solvate -cp boxed.gro -cs tip4p.gro -p topol.top -o solvated.gro 2>&1 | tail -12\n"
+        "cp topol.top topol_solvated.top\n",
         kind="bash",
         notebook="Cell 7 of the notebook",
     ),
@@ -39,7 +42,8 @@ STEPS = [
         "ions", "5. Add ions",
         "Lysozyme has a net charge. `grompp` prepares a run input file and `genion` replaces water "
         "molecules by Na+ and Cl- ions until the system is neutral.",
-        "gmx grompp -f scripts/ions.mdp -c solvated.gro -p topol.top -o ions.tpr -maxwarn 1 2>&1 | tail -5\n"
+        "cp topol_solvated.top topol.top   # genion edits topol.top, start from the solvated copy\n"
+        "gmx grompp -f scripts/ions.mdp -c solvated.gro -p topol.top -o ions.tpr -maxwarn 1 2>&1 | tail -15\n"
         "echo SOL | gmx genion -s ions.tpr -o solvated_ions.gro -p topol.top -pname NA -nname CL -neutral 2>&1 | tail -12\n",
         kind="bash",
         notebook="Cells 8 and 9 of the notebook",
@@ -48,7 +52,7 @@ STEPS = [
         "minimize", "6. Energy minimisation",
         "Steepest descent removes bad contacts. It stops when the largest force is below "
         "1000 kJ/mol/nm, which takes a few hundred steps.",
-        "gmx grompp -f scripts/minim.mdp -c solvated_ions.gro -p topol.top -o emin.tpr 2>&1 | tail -3\n"
+        "gmx grompp -f scripts/minim.mdp -c solvated_ions.gro -p topol.top -o emin.tpr 2>&1 | tail -15\n"
         "gmx mdrun -deffnm emin " + MPI + " 2>&1 | grep -E 'Steepest|Potential Energy|Maximum force|converged'\n",
         kind="bash",
         notebook="Cell 10 of the notebook",
@@ -57,7 +61,7 @@ STEPS = [
         "nvt", "7. NVT equilibration",
         "Constant volume and temperature, with position restraints on the protein so the solvent "
         "relaxes around it. The mdp file asks for 10000 steps of 2 fs, `-nsteps` shortens it for the demo.",
-        "gmx grompp -f scripts/nvt.mdp -c emin.gro -r emin.gro -p topol.top -o nvt.tpr 2>&1 | tail -3\n"
+        "gmx grompp -f scripts/nvt.mdp -c emin.gro -r emin.gro -p topol.top -o nvt.tpr 2>&1 | tail -15\n"
         "gmx mdrun -deffnm nvt " + MPI + " -nsteps $nsteps 2>&1 | tail -6\n",
         kind="bash",
         params={"nsteps": ("Number of steps (2 fs each)", 200, 2000, 500, 100)},
@@ -67,7 +71,7 @@ STEPS = [
         "npt", "8. NPT equilibration",
         "Pressure coupling is switched on (Parrinello Rahman barostat), so the box adjusts until "
         "the density is right.",
-        "gmx grompp -f scripts/npt.mdp -c nvt.gro -r nvt.gro -t nvt.cpt -p topol.top -o npt.tpr 2>&1 | tail -3\n"
+        "gmx grompp -f scripts/npt.mdp -c nvt.gro -r nvt.gro -t nvt.cpt -p topol.top -o npt.tpr 2>&1 | tail -15\n"
         "gmx mdrun -deffnm npt " + MPI + " -nsteps $nsteps 2>&1 | tail -6\n",
         kind="bash",
         params={"nsteps": ("Number of steps (2 fs each)", 200, 2000, 500, 100)},
@@ -76,7 +80,7 @@ STEPS = [
     Step(
         "production", "9. Production run",
         "Restraints are removed and we record the trajectory. A real project runs nanoseconds or more.",
-        "gmx grompp -f scripts/md.mdp -c npt.gro -t npt.cpt -p topol.top -o md.tpr 2>&1 | tail -3\n"
+        "gmx grompp -f scripts/md.mdp -c npt.gro -t npt.cpt -p topol.top -o md.tpr 2>&1 | tail -15\n"
         "gmx mdrun -deffnm md " + MPI + " -nsteps $nsteps 2>&1 | tail -6\n",
         kind="bash",
         params={"nsteps": ("Number of steps (2 fs each)", 200, 2000, 500, 100)},
