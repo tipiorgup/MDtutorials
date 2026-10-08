@@ -1,4 +1,4 @@
-# CoassemblyGromacs
+# Jupyter notebooks for your first MD
 
 This repository provides tutorials for two different platforms used in Molecular Dynamics (MD) simulations: **Gromacs** and **OpenMM**.
 
