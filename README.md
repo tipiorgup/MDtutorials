@@ -32,3 +32,17 @@ You can use `conda install` or `pip install`. I would like you to give it a try 
 Remember to select in anaconda the environment you want to use.
 
 If you have any doubts just reach me.
+
+## Streamlit website
+
+`app.py` is a step by step website. Choose OpenMM or GROMACS, run a very short demo of each
+stage, and download the notebooks at the end.
+
+Local run (needs the `gmx` command for the GROMACS path):
+
+`pip install -r requirements.txt` then `streamlit run app.py`
+
+Deploy on Streamlit Community Cloud: point a new app to this repository and `app.py`.
+`requirements.txt` installs OpenMM and `packages.txt` installs GROMACS with apt.
+Demos run on a small shared CPU, so keep the step sliders low. Only two demo runs execute at the
+same time, the others wait in a queue.
