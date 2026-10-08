@@ -75,10 +75,11 @@ def run_step(work, code, kind, params):
             rc = proc.wait()
         finally:
             timer.cancel()
-        if rc != 0:
+        if rc < 0:
             raise RuntimeError(
-                "Step failed (exit code %d). If it was killed, it ran longer than "
-                "%d s: lower the number of steps and try again." % (rc, STEP_TIMEOUT)
+                "Step stopped after %d s (killed). Lower the number of steps and try again." % STEP_TIMEOUT
             )
+        if rc != 0:
+            raise RuntimeError("Step failed with exit code %d, see the output above." % rc)
     finally:
         _gate.release()
