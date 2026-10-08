@@ -72,13 +72,6 @@ def show_analysis(label, work):
             st.line_chart(df[col])
 
 
-CREDIT_SHORT = (
-    "Credit: this tutorial is adapted from **Lysozyme in Water** by Justin A. Lemkul "
-    "([mdtutorials.com](http://www.mdtutorials.com/gmx/lysozyme/index.html)). "
-    "I did not create it, I adapted it into Jupyter notebooks and this Streamlit site."
-)
-
-
 def welcome():
     st.title("Your first molecular dynamics simulation")
     st.write(
@@ -86,7 +79,6 @@ def welcome():
         "demo of each one, and download the Jupyter notebooks at the end to run longer "
         "simulations on your own computer."
     )
-    st.info(CREDIT_SHORT)
     label = st.radio(
         "Choose your MD engine",
         list(ENGINES),
@@ -164,7 +156,6 @@ def tutorial():
 
 def finish(label, key):
     st.header("Download the notebooks")
-    st.info(CREDIT_SHORT)
     st.write(
         "You have seen every stage of the workflow with short demo runs. The notebooks use the "
         "full settings, so run them on your own computer."
