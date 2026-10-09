@@ -64,7 +64,7 @@ STEPS = [
         "gmx grompp -f scripts/nvt.mdp -c emin.gro -r emin.gro -p topol.top -o nvt.tpr 2>&1 | tail -15\n"
         "gmx mdrun -deffnm nvt " + MPI + " -nsteps $nsteps 2>&1 | tail -6\n",
         kind="bash",
-        params={"nsteps": ("Number of steps (2 fs each)", 200, 2000, 500, 100)},
+        params={"nsteps": ("Number of steps (2 fs each)", 100, 1000, 200, 100)},
         notebook="Cell 11 of the notebook",
     ),
     Step(
@@ -74,7 +74,7 @@ STEPS = [
         "gmx grompp -f scripts/npt.mdp -c nvt.gro -r nvt.gro -t nvt.cpt -p topol.top -o npt.tpr 2>&1 | tail -15\n"
         "gmx mdrun -deffnm npt " + MPI + " -nsteps $nsteps 2>&1 | tail -6\n",
         kind="bash",
-        params={"nsteps": ("Number of steps (2 fs each)", 200, 2000, 500, 100)},
+        params={"nsteps": ("Number of steps (2 fs each)", 100, 1000, 200, 100)},
         notebook="Cell 12 of the notebook",
     ),
     Step(
@@ -83,7 +83,7 @@ STEPS = [
         "gmx grompp -f scripts/md.mdp -c npt.gro -t npt.cpt -p topol.top -o md.tpr 2>&1 | tail -15\n"
         "gmx mdrun -deffnm md " + MPI + " -nsteps $nsteps 2>&1 | tail -6\n",
         kind="bash",
-        params={"nsteps": ("Number of steps (2 fs each)", 200, 2000, 500, 100)},
+        params={"nsteps": ("Number of steps (2 fs each)", 100, 1000, 200, 100)},
         notebook="Cell 13 of the notebook",
     ),
     Step(
