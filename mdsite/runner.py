@@ -1,4 +1,5 @@
 """Run tutorial steps as subprocesses inside a per session work directory."""
+import importlib.util
 import os
 import shutil
 import subprocess
@@ -41,6 +42,31 @@ def new_workdir(engine):
     return work
 
 
+def ensure_openmm():
+    """Install OpenMM into the running environment if the platform build skipped it."""
+    if importlib.util.find_spec("openmm"):
+        return
+    yield "OpenMM is not installed here, installing it now (first run only, about a minute)..."
+    installers = (
+        [sys.executable, "-m", "pip", "install", "openmm"],
+        ["uv", "pip", "install", "--python", sys.executable, "openmm"],
+    )
+    for cmd in installers:
+        try:
+            done = subprocess.run(cmd, capture_output=True, text=True, timeout=240)
+        except (OSError, subprocess.TimeoutExpired) as err:
+            yield "%s failed: %s" % (cmd[0], err)
+            continue
+        yield "\n".join(((done.stdout or "") + (done.stderr or "")).splitlines()[-4:])
+        if done.returncode == 0:
+            importlib.invalidate_caches()
+            return
+    raise RuntimeError(
+        "OpenMM could not be installed. Check that requirements.txt contains openmm "
+        "and read the app build log."
+    )
+
+
 def render(code, params):
     return Template(code).substitute(**params)
 
@@ -61,6 +87,7 @@ def run_step(work, code, kind, params):
         yield "Waiting for a free slot (%d s), other students are running..." % waited
     try:
         if kind == "python":
+            yield from ensure_openmm()
             cmd = [sys.executable, "-u", "-c", script]
         else:
             cmd = ["bash", "-e", "-o", "pipefail", "-c", script]
