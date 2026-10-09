@@ -2,6 +2,7 @@
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 import threading
 import time
@@ -60,7 +61,7 @@ def run_step(work, code, kind, params):
         yield "Waiting for a free slot (%d s), other students are running..." % waited
     try:
         if kind == "python":
-            cmd = ["python3", "-u", "-c", script]
+            cmd = [sys.executable, "-u", "-c", script]
         else:
             cmd = ["bash", "-e", "-o", "pipefail", "-c", script]
         proc = subprocess.Popen(
