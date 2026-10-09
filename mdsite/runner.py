@@ -11,7 +11,7 @@ from pathlib import Path
 from string import Template
 
 ROOT = Path(__file__).resolve().parent.parent
-STEP_TIMEOUT = 300  # seconds per step
+STEP_TIMEOUT = 150  # seconds per step
 MAX_LOG_LINES = 300
 THREADS = "2"
 
@@ -22,7 +22,7 @@ DEMO_MDP_EDITS = (
     r"s/^nstxout-compressed .*/nstxout-compressed = 50/"
 )
 
-_gate = threading.BoundedSemaphore(2)
+_gate = threading.BoundedSemaphore(1)
 
 
 def new_workdir(engine):

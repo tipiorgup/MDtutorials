@@ -39,9 +39,9 @@ def read_xvg(path):
 
 
 def read_openmm_logs(work):
-    cols = ["step", "potential energy", "temperature", "volume", "density"]
+    cols = ["step", "potential energy", "temperature"]
     frames = []
-    for phase in ("nvt", "npt", "md"):
+    for phase in ("heat", "md"):
         f = work / (phase + "_log.csv")
         if f.exists():
             df = pd.read_csv(f, skiprows=1, names=cols)
@@ -66,8 +66,7 @@ def show_analysis(label, work):
             st.info("No logs found yet, run the earlier steps first.")
             return
         for col, title in [("temperature", "Temperature (K), all phases"),
-                           ("potential energy", "Potential energy (kJ/mol), all phases"),
-                           ("density", "Density (g/mL), all phases")]:
+                           ("potential energy", "Potential energy (kJ/mol), all phases")]:
             st.caption(title)
             st.line_chart(df[col])
 
