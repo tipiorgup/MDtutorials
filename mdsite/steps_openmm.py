@@ -5,7 +5,7 @@ from openmm import *
 from openmm.unit import *
 """
 
-FF = "forcefield = ForceField('amber14-all.xml', 'implicit/gbn2.xml')\n"
+FF = "forcefield = ForceField('amber14-all.xml')\n"
 
 LOAD = """pdb = PDBFile('hydrogens.pdb')
 system = XmlSerializer.deserialize(open('system.xml').read())
@@ -15,7 +15,7 @@ simulation.loadState('%s')
 """
 
 NOTE = (
-    " The demo uses implicit solvent (water as a continuum) so it runs in seconds. "
+    " The demo runs the protein alone, without water, so it finishes in seconds. "
     "The notebook uses explicit water in a periodic box, with PME and a barostat."
 )
 
@@ -39,7 +39,7 @@ print('Atoms after removing water:', modeller.topology.getNumAtoms())
         "forcefield", "2. Force field and hydrogens",
         "A force field defines the energy of the system: bonds, angles, dihedrals, van der Waals "
         "and electrostatics. Crystal structures have no hydrogens, so the force field is also "
-        "used to add them. Here: AMBER14 with the GBn2 implicit solvent model." + NOTE,
+        "used to add them. Here: the AMBER14 force field." + NOTE,
         HEAD + FF + """
 pdb = PDBFile('clean.pdb')
 modeller = Modeller(pdb.topology, pdb.positions)
@@ -72,7 +72,7 @@ print('Energy after: ', e1)
 simulation.saveState('minimized.xml')
 open('system.xml', 'w').write(XmlSerializer.serialize(system))
 """,
-        params={"iters": ("Maximum minimisation iterations", 50, 500, 200, 50)},
+        params={"iters": ("Maximum minimisation iterations", 50, 500, 100, 50)},
         notebook="Cell 7 of the notebook",
     ),
     Step(
@@ -80,6 +80,7 @@ open('system.xml', 'w').write(XmlSerializer.serialize(system))
         "We warm the protein from 50 K to 300 K in six stages with a Langevin thermostat, so the "
         "structure is not shocked by sudden motion. The notebook equilibrates for longer." + NOTE,
         HEAD + LOAD % "minimized.xml" + """
+integrator.setFriction(20/picosecond)   # strong coupling, so the short demo warms up fast
 simulation.context.setVelocitiesToTemperature(50*kelvin)
 simulation.reporters.append(StateDataReporter('heat_log.csv', 10, step=True,
         potentialEnergy=True, temperature=True))
@@ -91,7 +92,7 @@ for T in (50, 100, 150, 200, 250, 300):
     simulation.step(stage)
 simulation.saveState('heated.xml')
 """,
-        params={"nsteps": ("Total heating steps (2 fs each)", 60, 600, 120, 60)},
+        params={"nsteps": ("Total heating steps (2 fs each)", 60, 1500, 300, 60)},
         notebook="Cells 8 and 9 of the notebook",
     ),
     Step(
@@ -106,13 +107,13 @@ simulation.reporters.append(StateDataReporter('md_log.csv', 10, step=True,
 print('Running production for $nsteps steps')
 simulation.step($nsteps)
 """,
-        params={"nsteps": ("Number of steps (2 fs each)", 50, 500, 100, 50)},
+        params={"nsteps": ("Number of steps (2 fs each)", 100, 2500, 500, 100)},
         notebook="Cells 8 to 10 of the notebook",
     ),
     Step(
         "analysis", "6. Analysis",
         "The log files hold potential energy and temperature as a function of step. Check that "
-        "the temperature climbs to 300 K during heating and then fluctuates around it.",
+        "the temperature climbs towards 300 K during heating and then stays close to it.",
         "", analysis=True, notebook="Cell 11 of the notebook",
     ),
 ]

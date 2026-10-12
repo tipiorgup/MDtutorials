@@ -45,7 +45,7 @@ Local run (needs the `gmx` command for the GROMACS path):
 Deploy on Streamlit Community Cloud: point a new app to this repository and `app.py`.
 `requirements.txt` installs OpenMM and `packages.txt` installs GROMACS with apt.
 Demos run on a small shared CPU, so keep the step sliders low. Demo runs execute one at a time, the
-others wait in a queue. The OpenMM demo uses implicit solvent to stay fast, the notebook uses explicit water.
+others wait in a queue. The OpenMM demo runs the protein without water to stay fast, the notebook uses explicit water.
 
 ## Credits
 
